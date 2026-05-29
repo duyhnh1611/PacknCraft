@@ -8,6 +8,8 @@ namespace PacknCraft.Inventory
         // PUBLIC FIELDS
         public System.Action<Vector2Int, CellState> OnCellStateChanged;
         public System.Action<PlacedItem> OnItemAdded;
+        public System.Action<PlacedItem> OnItemRemoved;
+        public System.Action<PlacedItem> OnItemChanged;
 
         // PRIVATE FIELDS
         private readonly CellState[,] grid;
@@ -64,6 +66,17 @@ namespace PacknCraft.Inventory
             OnItemAdded?.Invoke(item);
         }
 
+        public void Remove(PlacedItem item)
+        {
+            if (!items.Contains(item))
+                return;
+
+            ApplyToGrid(item, CellState.Empty);
+            items.Remove(item);
+
+            OnItemRemoved?.Invoke(item);
+        }
+
         public List<(Vector2Int pos, bool valid)> CheckItem(ItemData data, Vector2Int pos)
         {
             var result = new List<(Vector2Int, bool)>();
@@ -72,9 +85,11 @@ namespace PacknCraft.Inventory
             int size = data.Size;
 
             for (int x = 0; x < size; x++)
+            {
                 for (int y = 0; y < size; y++)
                 {
-                    if (!shape[x, y]) continue;
+                    if (!shape[x, y])
+                        continue;
 
                     int gx = pos.x + x;
                     int gy = pos.y + y;
@@ -83,29 +98,29 @@ namespace PacknCraft.Inventory
 
                     result.Add((new Vector2Int(gx, gy), valid));
                 }
+            }
+
 
             return result;
         }
 
         public bool TryRotateItem(PlacedItem item)
         {
-            // Remove from grid
             ApplyToGrid(item, CellState.Empty);
 
             var data = item.Data;
             var oldRotation = data.Rotation;
 
-            // Rotate
             data.Rotation = (ItemRotation)(((int)data.Rotation + 1) % 4);
 
-            // Validate
             if (CanPlace(data, item.Position))
             {
                 ApplyToGrid(item, CellState.Filled);
+
+                OnItemChanged?.Invoke(item);
                 return true;
             }
 
-            // Rollback if failed
             data.Rotation = oldRotation;
             ApplyToGrid(item, CellState.Filled);
 
@@ -119,9 +134,11 @@ namespace PacknCraft.Inventory
             int size = item.Data.Size;
 
             for (int x = 0; x < size; x++)
+            {
                 for (int y = 0; y < size; y++)
                 {
-                    if (!shape[x, y]) continue;
+                    if (!shape[x, y])
+                        continue;
 
                     int gx = item.Position.x + x;
                     int gy = item.Position.y + y;
@@ -129,6 +146,7 @@ namespace PacknCraft.Inventory
                     grid[gx, gy] = state;
                     OnCellStateChanged?.Invoke(new Vector2Int(gx, gy), state);
                 }
+            }
         }
 
         private bool Inside(int x, int y)
@@ -139,8 +157,12 @@ namespace PacknCraft.Inventory
         private void Clear()
         {
             for (int x = 0; x < Width; x++)
+            {
                 for (int y = 0; y < Height; y++)
+                {
                     grid[x, y] = CellState.Empty;
+                }
+            }
         }
     }
 }

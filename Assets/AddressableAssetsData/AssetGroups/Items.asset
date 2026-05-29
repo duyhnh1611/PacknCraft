@@ -1,0 +1,63 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: Items
+  m_EditorClassIdentifier: 
+  m_GroupName: Items
+  m_GUID: 55ba4be5140010b4e9f4ae16919c70da
+  m_SerializeEntries:
+  - m_GUID: 10996b473b9064041af4bd1358d9ab10
+    m_Address: ItemView/Leather
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5a40db2eeca033d4eba475fffbf3cad2
+    m_Address: ItemView/Shield
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6050929b756829a46b7fd107b280a7a8
+    m_Address: ItemView/Wood
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7f45c788a5edf554abdb722ca72f1343
+    m_Address: ItemView/Sword
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b8268ea89137d994db43452736cef2c1
+    m_Address: ItemView/Axe
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d4330cdc8d104564ca47fb4be1b941e6
+    m_Address: ItemView/Iron
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: daa9d3c6b5f06ad4295a2d55f3254a0c
+    m_Address: ItemView/Stone
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e8a61d0ee6255c74bb907b266d118670
+    m_Address: ItemView/Rope
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: 395ff97a73d3c74418b72da32fd96ec6, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: cc72ccca698aa6742917924cf56d1bd5, type: 2}
+    - {fileID: 11400000, guid: dc39da6863258f445981011e62036aa8, type: 2}

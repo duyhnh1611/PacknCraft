@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ae5403ca300353048bad192d1b21c0e2, type: 3}
   m_Name: Sword
   m_EditorClassIdentifier: 
-  Id: sword
+  Id: Sword
   Shape:
     size: 3
     data: 000100000100000100

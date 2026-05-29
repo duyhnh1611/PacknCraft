@@ -12,7 +12,6 @@ namespace PacknCraft
     {
         Empty,
         Filled,
-        Overlapped,
         PreviewValid,
         PreviewInvalid
     }

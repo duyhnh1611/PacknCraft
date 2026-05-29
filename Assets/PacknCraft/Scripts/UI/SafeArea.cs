@@ -10,7 +10,7 @@ namespace PacknCraft.UI
         private Rect lastSafeArea = new(0, 0, 0, 0);
         private Vector2Int lastScreenSize = new(0, 0);
 
-        // UNITY EVENTS
+        // UNITY METHODS
         private void Awake()
         {
             rectTransform = GetComponent<RectTransform>();

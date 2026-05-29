@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ae5403ca300353048bad192d1b21c0e2, type: 3}
   m_Name: Shield
   m_EditorClassIdentifier: 
-  Id: shield
+  Id: Shield
   Shape:
     size: 2
     data: 01010101
