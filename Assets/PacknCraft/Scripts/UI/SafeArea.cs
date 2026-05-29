@@ -1,8 +1,8 @@
 using UnityEngine;
 
-namespace PacknCraft.Utils
+namespace PacknCraft.UI
 {
-    [ExecuteAlways]
+    [ExecuteAlways, RequireComponent(typeof(RectTransform))]
     public class SafeArea : MonoBehaviour
     {
         // PRIVATE FIELDS
@@ -30,6 +30,9 @@ namespace PacknCraft.Utils
         // PRIVATE METHODS
         private void ApplySafeArea()
         {
+            if (Screen.width <= 0 || Screen.height <= 0)
+                return;
+
             Rect safeArea = Screen.safeArea;
 
             lastSafeArea = safeArea;
