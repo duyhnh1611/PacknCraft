@@ -13,6 +13,7 @@ namespace PacknCraft.Inventory
 
         // PRIVATE FIELDS
         private readonly CellState[,] grid;
+        private readonly PlacedItem[,] itemGrid;
         private readonly List<PlacedItem> items = new();
 
         // PROPERTIES
@@ -26,6 +27,7 @@ namespace PacknCraft.Inventory
             Height = height;
 
             grid = new CellState[width, height];
+            itemGrid = new PlacedItem[width, height];
             Clear();
         }
 
@@ -33,8 +35,18 @@ namespace PacknCraft.Inventory
 
         public CellState GetCellState(int x, int y) => grid[x, y];
 
+        public PlacedItem GetItemAt(Vector2Int pos)
+        {
+            if (!Inside(pos.x, pos.y))
+                return null;
+
+            return itemGrid[pos.x, pos.y];
+        }
+
         public bool CanPlace(ItemData data, Vector2Int pos)
         {
+            Vector2Int topLeft = CenterToTopLeft(data, pos);
+
             var shape = data.GetShape();
             int size = data.Size;
 
@@ -43,8 +55,8 @@ namespace PacknCraft.Inventory
                 {
                     if (!shape[x, y]) continue;
 
-                    int gx = pos.x + x;
-                    int gy = pos.y + y;
+                    int gx = topLeft.x + x;
+                    int gy = topLeft.y + y;
 
                     if (!Inside(gx, gy)) return false;
                     if (grid[gx, gy] != CellState.Empty) return false;
@@ -58,7 +70,9 @@ namespace PacknCraft.Inventory
             if (!CanPlace(data, pos))
                 return;
 
-            var item = new PlacedItem(data, pos);
+            Vector2Int topLeft = CenterToTopLeft(data, pos);
+
+            var item = new PlacedItem(data, topLeft);
             items.Add(item);
 
             ApplyToGrid(item, CellState.Filled);
@@ -79,6 +93,8 @@ namespace PacknCraft.Inventory
 
         public List<(Vector2Int pos, bool valid)> CheckItem(ItemData data, Vector2Int pos)
         {
+            Vector2Int topLeft = CenterToTopLeft(data, pos);
+
             var result = new List<(Vector2Int, bool)>();
 
             var shape = data.GetShape();
@@ -91,15 +107,14 @@ namespace PacknCraft.Inventory
                     if (!shape[x, y])
                         continue;
 
-                    int gx = pos.x + x;
-                    int gy = pos.y + y;
+                    int gx = topLeft.x + x;
+                    int gy = topLeft.y + y;
 
                     bool valid = Inside(gx, gy) && grid[gx, gy] == CellState.Empty;
 
                     result.Add((new Vector2Int(gx, gy), valid));
                 }
             }
-
 
             return result;
         }
@@ -111,10 +126,13 @@ namespace PacknCraft.Inventory
             var data = item.Data;
             var oldRotation = data.Rotation;
 
+            Vector2Int center = GetItemCenter(item);
+
             data.Rotation = (ItemRotation)(((int)data.Rotation + 1) % 4);
 
-            if (CanPlace(data, item.Position))
+            if (CanPlace(data, center))
             {
+                item.Position = CenterToTopLeft(data, center);
                 ApplyToGrid(item, CellState.Filled);
 
                 OnItemChanged?.Invoke(item);
@@ -144,6 +162,8 @@ namespace PacknCraft.Inventory
                     int gy = item.Position.y + y;
 
                     grid[gx, gy] = state;
+                    itemGrid[gx, gy] = state == CellState.Empty ? null : item;
+
                     OnCellStateChanged?.Invoke(new Vector2Int(gx, gy), state);
                 }
             }
@@ -161,7 +181,44 @@ namespace PacknCraft.Inventory
                 for (int y = 0; y < Height; y++)
                 {
                     grid[x, y] = CellState.Empty;
+                    itemGrid[x, y] = null;
                 }
+            }
+        }
+
+        private Vector2Int CenterToTopLeft(ItemData data, Vector2Int centerPos)
+        {
+            int size = data.Size;
+
+            if (size % 2 == 0)
+            {
+                int offset = size / 2 - 1;
+                return new Vector2Int(centerPos.x - offset, centerPos.y - offset);
+            }
+            else
+            {
+                int offset = size / 2;
+                return new Vector2Int(centerPos.x - offset, centerPos.y - offset);
+            }
+        }
+
+        private Vector2Int GetItemCenter(PlacedItem item)
+        {
+            int size = item.Data.Size;
+
+            if (size % 2 == 0)
+            {
+                return new Vector2Int(
+                    item.Position.x + size / 2 - 1,
+                    item.Position.y + size / 2 - 1
+                );
+            }
+            else
+            {
+                return new Vector2Int(
+                    item.Position.x + size / 2,
+                    item.Position.y + size / 2
+                );
             }
         }
     }

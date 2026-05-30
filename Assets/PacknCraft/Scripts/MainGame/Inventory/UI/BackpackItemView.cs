@@ -10,10 +10,10 @@ namespace PacknCraft.Inventory.UI
 
         // PRIVATE
         private RectTransform rect;
-        private PlacedItem item;
+        private ItemData data;
 
         // PROPERTIES
-        public PlacedItem Item => item;
+        public ItemData Data => data;
 
         // UNITY
         private void Awake()
@@ -22,9 +22,9 @@ namespace PacknCraft.Inventory.UI
         }
 
         // PUBLIC
-        public void Bind(PlacedItem item, float cellSize)
+        public void Bind(ItemData data, float cellSize)
         {
-            this.item = item;
+            this.data = data;
 
             ApplySize(cellSize);
             ApplyRotation();
@@ -38,7 +38,7 @@ namespace PacknCraft.Inventory.UI
         // PRIVATE
         private void ApplySize(float cellSize)
         {
-            int size = item.Data.Size;
+            int size = data.Size;
 
             float pixelSize = size * cellSize;
 
@@ -47,7 +47,7 @@ namespace PacknCraft.Inventory.UI
 
         private void ApplyRotation()
         {
-            float angle = item.Data.Rotation switch
+            float angle = data.Rotation switch
             {
                 ItemRotation.Up => 0,
                 ItemRotation.Right => -90,

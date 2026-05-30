@@ -57,5 +57,10 @@ namespace PacknCraft.Inventory.UI
         {
             return handler.TryRotateItem(item);
         }
+
+        public PlacedItem GetItemAt(Vector2Int pos)
+        {
+            return handler.GetItemAt(pos);
+        }
     }
 }

@@ -56,11 +56,11 @@ namespace PacknCraft.Inventory.UI
 
             var result = handler.CheckItem(data, pivot);
 
-            foreach (var r in result)
+            foreach (var (pos, valid) in result)
             {
-                if (!Inside(r.pos)) continue;
+                if (!Inside(pos)) continue;
 
-                cells[r.pos.x, r.pos.y].SetState(r.valid ? CellState.PreviewValid : CellState.PreviewInvalid);
+                cells[pos.x, pos.y].SetState(valid ? CellState.PreviewValid : CellState.PreviewInvalid);
             }
         }
 

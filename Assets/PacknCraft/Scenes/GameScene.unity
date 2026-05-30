@@ -962,6 +962,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 662795967}
+  - component: {fileID: 662795968}
   m_Layer: 5
   m_Name: DragLayer
   m_TagString: Untagged
@@ -988,6 +989,21 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &662795968
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 662795966}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3129a0e3c44cbf44fb20a54a05b5c3f6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rootCanvas: {fileID: 1333645478}
+  container: {fileID: 662795967}
+  cellSize: 150
 --- !u!1 &1128222643
 GameObject:
   m_ObjectHideFlags: 0
@@ -1433,6 +1449,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   backpackUI: {fileID: 1571067304}
+  dragView: {fileID: 662795968}
   itemConfigs:
   - {fileID: 11400000, guid: 03c4554c397f29c4fa8e661f226d3b92, type: 2}
   - {fileID: 11400000, guid: 0ab6e8eaf47c87a4fb87276cf06753a0, type: 2}
@@ -1442,6 +1459,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 0d740c18d52dc0f4cb70e5c44ce80233, type: 2}
   - {fileID: 11400000, guid: 1cafe437f581b0c4cb8d87eb4924e6ac, type: 2}
   - {fileID: 11400000, guid: 5218e14651952f54aad7daff8bf5b8d7, type: 2}
+  holdThreshold: 0.15
 --- !u!1 &1595071949
 GameObject:
   m_ObjectHideFlags: 0

@@ -11,11 +11,13 @@ namespace PacknCraft.Inventory.UI
         [SerializeField] private BackpackUI backpackUI;
 
         [Header("Items")]
+        [SerializeField] private BackpackDragView dragView;
         [SerializeField] private List<ItemConfig> itemConfigs;
 
         [Header("Drag Settings")]
         [SerializeField] private float holdThreshold = 0.15f;
 
+        // PRIVATE FIELDS
         private List<ItemData> items;
         private ItemData currentItem;
 
@@ -23,10 +25,10 @@ namespace PacknCraft.Inventory.UI
         private Vector2Int originalPos;
         private ItemRotation originalRotation;
 
-        private BackpackItemView pressedItemView;
         private float pressTime;
         private bool isHolding;
 
+        // UNITY METHODS
         private void Awake()
         {
             items = new List<ItemData>();
@@ -45,8 +47,11 @@ namespace PacknCraft.Inventory.UI
             HandleHold(pointerPos);
             HandleRelease(pointerPos);
             HandleHover(pointerPos);
+
+            dragView.UpdatePosition(pointerPos);
         }
 
+        // PRIVATE METHODS
         private void PickRandomItem()
         {
             if (items.Count == 0)
@@ -109,14 +114,25 @@ namespace PacknCraft.Inventory.UI
         {
             if (!IsPressedDown()) return;
 
-            pressedItemView = RaycastItem(screenPos);
+            var cell = RaycastCell(screenPos);
+
+            if (cell != null)
+            {
+                Vector2Int pos = cell.GetPosition();
+                draggingItem = backpackUI.GetItemAt(pos);
+            }
+            else
+            {
+                draggingItem = null;
+            }
+
             pressTime = Time.time;
             isHolding = false;
         }
 
         private void HandleHold(Vector2 screenPos)
         {
-            if (pressedItemView == null) return;
+            if (draggingItem == null) return;
             if (!IsPressed()) return;
             if (isHolding) return;
 
@@ -124,13 +140,12 @@ namespace PacknCraft.Inventory.UI
             {
                 isHolding = true;
 
-                // Start dragging
-                draggingItem = pressedItemView.Item;
-
                 originalPos = draggingItem.Position;
                 originalRotation = draggingItem.Data.Rotation;
 
                 backpackUI.RemoveItem(draggingItem);
+
+                dragView.Show(draggingItem.Data);
             }
         }
 
@@ -138,10 +153,11 @@ namespace PacknCraft.Inventory.UI
         {
             if (!IsReleased()) return;
 
+            dragView.Hide();
+
             var cell = RaycastCell(screenPos);
 
-            // If dragging -> drop
-            if (draggingItem != null)
+            if (draggingItem != null && isHolding)
             {
                 if (cell != null)
                 {
@@ -151,42 +167,54 @@ namespace PacknCraft.Inventory.UI
 
                     if (!success)
                     {
-                        // rollback
                         draggingItem.Data.Rotation = originalRotation;
-                        backpackUI.TryAddItem(draggingItem.Data, originalPos);
+
+                        Vector2Int originalCenter = new Vector2Int(
+                            originalPos.x + draggingItem.Data.Size / 2,
+                            originalPos.y + draggingItem.Data.Size / 2
+                        );
+
+                        backpackUI.TryAddItem(draggingItem.Data, originalCenter);
                     }
                 }
                 else
                 {
-                    // rollback if drop outside
                     draggingItem.Data.Rotation = originalRotation;
-                    backpackUI.TryAddItem(draggingItem.Data, originalPos);
+
+                    Vector2Int originalCenter = new Vector2Int(
+                        originalPos.x + draggingItem.Data.Size / 2,
+                        originalPos.y + draggingItem.Data.Size / 2
+                    );
+
+                    backpackUI.TryAddItem(draggingItem.Data, originalCenter);
                 }
 
                 draggingItem = null;
-                pressedItemView = null;
                 return;
             }
 
-            // If NOT holding -> treat as click (rotate)
-            if (pressedItemView != null && !isHolding)
+            if (cell != null)
             {
-                backpackUI.TryRotateItem(pressedItemView.Item);
-            }
-            else if (pressedItemView == null && cell != null)
-            {
-                // Place new item
-                if (currentItem != null)
-                {
-                    Vector2Int pos = cell.GetPosition();
-                    bool success = backpackUI.TryAddItem(currentItem, pos);
+                Vector2Int pos = cell.GetPosition();
+                var item = backpackUI.GetItemAt(pos);
 
-                    if (success)
-                        PickRandomItem();
+                if (item != null && !isHolding)
+                {
+                    backpackUI.TryRotateItem(item);
+                }
+                else if (item == null)
+                {
+                    if (currentItem != null)
+                    {
+                        bool success = backpackUI.TryAddItem(currentItem, pos);
+
+                        if (success)
+                            PickRandomItem();
+                    }
                 }
             }
 
-            pressedItemView = null;
+            draggingItem = null;
         }
 
         private void HandleHover(Vector2 screenPos)
@@ -209,20 +237,6 @@ namespace PacknCraft.Inventory.UI
             {
                 backpackUI.ShowPreview(currentItem, pos);
             }
-        }
-
-        private BackpackItemView RaycastItem(Vector2 screenPos)
-        {
-            var results = Raycast(screenPos);
-
-            foreach (var hit in results)
-            {
-                var item = hit.gameObject.GetComponentInParent<BackpackItemView>();
-                if (item != null)
-                    return item;
-            }
-
-            return null;
         }
 
         private BackpackCellViewBase RaycastCell(Vector2 screenPos)

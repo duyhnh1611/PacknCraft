@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using UnityEngine;
 
 namespace PacknCraft.Inventory.UI
@@ -35,11 +34,11 @@ namespace PacknCraft.Inventory.UI
 
             foreach (var item in handler.GetItems())
             {
-                _ = CreateItem(item);
+                CreateItem(item);
             }
         }
 
-        private async Task CreateItem(PlacedItem item)
+        private async void CreateItem(PlacedItem item)
         {
             var address = $"ItemView/{item.Data.Config.Id}";
 
@@ -54,7 +53,7 @@ namespace PacknCraft.Inventory.UI
             var rect = go.GetComponent<RectTransform>();
             var view = go.GetComponent<BackpackItemView>();
 
-            view.Bind(item, cellSize);
+            view.Bind(item.Data, cellSize);
             ApplyPosition(rect, item);
 
             itemViews[item] = view;
@@ -74,7 +73,7 @@ namespace PacknCraft.Inventory.UI
 
         private void OnItemAdded(PlacedItem item)
         {
-            _ = CreateItem(item);
+            CreateItem(item);
         }
 
         private void OnItemChanged(PlacedItem item)
