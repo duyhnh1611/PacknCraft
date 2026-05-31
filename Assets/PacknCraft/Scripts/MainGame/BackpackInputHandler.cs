@@ -255,6 +255,7 @@ namespace PacknCraft.Inventory.UI
 
             if (draggingItem != null && isHolding)
             {
+                bool moved = false;
                 if (cell != null)
                 {
                     Vector2Int pos = cell.GetPosition();
@@ -282,30 +283,13 @@ namespace PacknCraft.Inventory.UI
                         }
                     }
 
-                    bool success = backpackUI.TryAddItem(draggingItem.Data, pos);
-
-                    if (!success)
-                    {
-                        draggingItem.Data.Rotation = originalRotation;
-
-                        Vector2Int originalCenter = new Vector2Int(
-                            originalPos.x + draggingItem.Data.Size / 2,
-                            originalPos.y + draggingItem.Data.Size / 2
-                        );
-
-                        backpackUI.TryAddItem(draggingItem.Data, originalCenter);
-                    }
+                    moved = backpackUI.TryAddItem(draggingItem.Data, pos);
                 }
-                else
+
+                if (!moved)
                 {
                     draggingItem.Data.Rotation = originalRotation;
-
-                    Vector2Int originalCenter = new Vector2Int(
-                        originalPos.x + draggingItem.Data.Size / 2,
-                        originalPos.y + draggingItem.Data.Size / 2
-                    );
-
-                    backpackUI.TryAddItem(draggingItem.Data, originalCenter);
+                    backpackUI.TryAddItem(draggingItem.Data, originalPos);
                 }
 
                 draggingItem = null;
