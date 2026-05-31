@@ -1,15 +1,15 @@
-using Cysharp.Threading.Tasks;
 using PacknCraft;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class SceneLoader : UnityEngine.MonoBehaviour
+public class SceneLoader : MonoBehaviour
 {
-    public async UniTask LoadSceneAsync(SceneId sceneId)
+    public AsyncOperation LoadSceneOperation(SceneId sceneId)
     {
-        await SceneManager.LoadSceneAsync(GetSceneName(sceneId)).ToUniTask();
+        return SceneManager.LoadSceneAsync(GetSceneName(sceneId));
     }
 
-    private string GetSceneName(SceneId id)
+    public string GetSceneName(SceneId id)
     {
         return id switch
         {

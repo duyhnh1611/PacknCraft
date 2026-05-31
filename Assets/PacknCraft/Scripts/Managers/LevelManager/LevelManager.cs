@@ -26,6 +26,11 @@ public class LevelManager : MonoBehaviour
         return GetLevelInfo(currentLevel);
     }
 
+    public async UniTask<LevelInfo> LoadCurrentLevelAsync()
+    {
+        return await LoadLevelAsync(currentLevel);
+    }
+
     public async UniTask<LevelInfo> LoadNextLevelAsync()
     {
         return await LoadLevelAsync(currentLevel + 1);
