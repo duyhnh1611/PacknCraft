@@ -69,6 +69,10 @@ public class GameManager : MonoBehaviour
 
     private async void HandleMissionCompleted()
     {
+        await PopupManager.Instance.PushPopup("PopupResult");
+        await UniTask.Delay(2000);
+        PopupManager.Instance.PopPopup();
+
         await NextLevel();
     }
 
