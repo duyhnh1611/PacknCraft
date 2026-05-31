@@ -1,0 +1,7 @@
+{
+  "recipes": [
+    { "result": "Axe", "ingredients": ["Wood", "Stone"] },
+    { "result": "Sword", "ingredients": ["Axe", "Iron"] },
+    { "result": "Shield", "ingredients": ["Leather", "Wood"] }
+  ]
+}

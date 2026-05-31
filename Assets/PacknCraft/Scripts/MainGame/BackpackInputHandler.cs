@@ -49,6 +49,7 @@ namespace PacknCraft.Inventory.UI
             lootUI.Init(new List<ItemData>
             {
                 new ItemData(itemConfigs[0]),
+                new ItemData(itemConfigs[1]),
                 new ItemData(itemConfigs[2]),
                 new ItemData(itemConfigs[3]),
                 new ItemData(itemConfigs[4]),
@@ -257,6 +258,29 @@ namespace PacknCraft.Inventory.UI
                 if (cell != null)
                 {
                     Vector2Int pos = cell.GetPosition();
+
+                    var targetItem = backpackUI.GetItemAt(pos);
+
+                    if (targetItem != null && targetItem != draggingItem)
+                    {
+                        var crafted = backpackUI.TryCraftItem(draggingItem, targetItem);
+
+                        if (crafted != null)
+                        {
+                            Vector2Int preferredPos = targetItem.Position;
+
+                            if (!backpackUI.TryAddItem(crafted, preferredPos))
+                            {
+                                if (!backpackUI.TryAddItem(crafted, originalPos))
+                                {
+                                    await lootUI.Add(crafted);
+                                }
+                            }
+
+                            draggingItem = null;
+                            return;
+                        }
+                    }
 
                     bool success = backpackUI.TryAddItem(draggingItem.Data, pos);
 

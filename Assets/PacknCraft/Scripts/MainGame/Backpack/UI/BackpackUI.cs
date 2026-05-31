@@ -1,3 +1,4 @@
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 namespace PacknCraft.Inventory.UI
@@ -14,10 +15,12 @@ namespace PacknCraft.Inventory.UI
         [SerializeField] private float cellSize = 150f;
 
         private BackpackHandler handler;
+        private Crafting.RecipeManager recipeManager;
 
         private void Awake()
         {
             handler = new BackpackHandler(width, height);
+            recipeManager = new Crafting.RecipeManager();
         }
 
         private void Start()
@@ -27,6 +30,8 @@ namespace PacknCraft.Inventory.UI
 
             gridView.Refresh();
             inventoryView.Refresh();
+
+            recipeManager.InitAsync().Forget();
         }
 
         public bool TryAddItem(ItemData data, Vector2Int pos)
@@ -61,6 +66,28 @@ namespace PacknCraft.Inventory.UI
         public PlacedItem GetItemAt(Vector2Int pos)
         {
             return handler.GetItemAt(pos);
+        }
+
+        public ItemData TryCraftItem(PlacedItem a, PlacedItem b)
+        {
+            if (recipeManager == null)
+                return null;
+
+            if (a == null || b == null || a == b)
+                return null;
+
+            if (!ShapeAdjacency.AreAdjacent(a, b))
+                return null;
+
+            var recipe = recipeManager.Find(a.Data.Config, b.Data.Config);
+            if (recipe == null)
+                return null;
+
+            handler.Remove(a);
+            handler.Remove(b);
+
+            var newItem = new ItemData(recipe.Result);
+            return newItem;
         }
     }
 }
