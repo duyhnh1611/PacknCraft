@@ -1,5 +1,5 @@
+using Cysharp.Threading.Tasks;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
@@ -11,7 +11,7 @@ public static class AssetLoader
     private static readonly Dictionary<string, List<AsyncOperationHandle>> handles = new();
 
     // PUBLIC METHODS
-    public static async Task<T> LoadAsync<T>(string address, string group) where T : Object
+    public static async UniTask<T> LoadAsync<T>(string address, string group) where T : Object
     {
         if (!cache.TryGetValue(group, out var groupCache))
         {
@@ -39,7 +39,7 @@ public static class AssetLoader
         return result;
     }
 
-    public static async Task<GameObject> InstantiateAsync(string address, string group, Transform parent = null)
+    public static async UniTask<GameObject> InstantiateAsync(string address, string group, Transform parent = null)
     {
         var prefab = await LoadAsync<GameObject>(address, group);
         return Object.Instantiate(prefab, parent);

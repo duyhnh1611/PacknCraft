@@ -43,7 +43,7 @@ namespace PacknCraft.Inventory.UI
             if (view == null)
             {
                 var go = await AssetLoader.InstantiateAsync(
-                    $"ItemView/{id}",
+                    $"BackpackItem/{id}",
                     Define.GAME_ASSET,
                     transform
                 );

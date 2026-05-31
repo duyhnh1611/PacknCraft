@@ -40,7 +40,7 @@ namespace PacknCraft.Inventory.UI
 
         private async void CreateItem(PlacedItem item)
         {
-            var address = $"ItemView/{item.Data.Config.Id}";
+            var address = $"BackpackItem/{item.Data.Config.Id}";
 
             var go = await AssetLoader.InstantiateAsync(
                 address,

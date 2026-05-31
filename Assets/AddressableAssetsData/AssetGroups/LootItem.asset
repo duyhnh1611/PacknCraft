@@ -10,48 +10,48 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
-  m_Name: Items
+  m_Name: LootItem
   m_EditorClassIdentifier: 
-  m_GroupName: Items
-  m_GUID: 55ba4be5140010b4e9f4ae16919c70da
+  m_GroupName: LootItem
+  m_GUID: 2f2fa6ea16d330141a8be10d9d92e58a
   m_SerializeEntries:
-  - m_GUID: 10996b473b9064041af4bd1358d9ab10
-    m_Address: ItemView/Leather
+  - m_GUID: 0ad754c9079dd1743bc877717ded33ef
+    m_Address: LootItem/Leather
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 5a40db2eeca033d4eba475fffbf3cad2
-    m_Address: ItemView/Shield
+  - m_GUID: 4a0fe1104ea01454fa45a5c2236fc462
+    m_Address: LootItem/Rope
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 6050929b756829a46b7fd107b280a7a8
-    m_Address: ItemView/Wood
+  - m_GUID: 5b34f483a9386364c885a53bfc46ea40
+    m_Address: LootItem/Sword
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 7f45c788a5edf554abdb722ca72f1343
-    m_Address: ItemView/Sword
+  - m_GUID: a291d265ba388034183a6c4dda5478af
+    m_Address: LootItem/Wood
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: b8268ea89137d994db43452736cef2c1
-    m_Address: ItemView/Axe
+  - m_GUID: c44ff250d3bf8ad4fa590a81158b11f1
+    m_Address: LootItem/Stone
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: d4330cdc8d104564ca47fb4be1b941e6
-    m_Address: ItemView/Iron
+  - m_GUID: ce8fb410277c06745a7b2bf257e0c2bf
+    m_Address: LootItem/Shield
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: daa9d3c6b5f06ad4295a2d55f3254a0c
-    m_Address: ItemView/Stone
+  - m_GUID: cf68779a2021a3a46bb340dabbae0930
+    m_Address: LootItem/Iron
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: e8a61d0ee6255c74bb907b266d118670
-    m_Address: ItemView/Rope
+  - m_GUID: dd78b1e2c353e6948b66f40c11245ac3
+    m_Address: LootItem/Axe
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -59,5 +59,5 @@ MonoBehaviour:
   m_Settings: {fileID: 11400000, guid: 395ff97a73d3c74418b72da32fd96ec6, type: 2}
   m_SchemaSet:
     m_Schemas:
-    - {fileID: 11400000, guid: cc72ccca698aa6742917924cf56d1bd5, type: 2}
-    - {fileID: 11400000, guid: dc39da6863258f445981011e62036aa8, type: 2}
+    - {fileID: 11400000, guid: 1d5da2e4f6d472e43b192459051400d7, type: 2}
+    - {fileID: 11400000, guid: 980ea71e99d5b6a45a34e9c76e7c95d7, type: 2}

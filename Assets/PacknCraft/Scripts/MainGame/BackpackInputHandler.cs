@@ -1,3 +1,4 @@
+using Cysharp.Threading.Tasks;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -9,6 +10,7 @@ namespace PacknCraft.Inventory.UI
     {
         [Header("Refs")]
         [SerializeField] private BackpackUI backpackUI;
+        [SerializeField] private LootUI lootUI;
 
         [Header("Items")]
         [SerializeField] private BackpackDragView dragView;
@@ -16,19 +18,27 @@ namespace PacknCraft.Inventory.UI
 
         [Header("Drag Settings")]
         [SerializeField] private float holdThreshold = 0.15f;
+        [SerializeField] private float dragThreshold = 10f;
 
         // PRIVATE FIELDS
         private List<ItemData> items;
-        private ItemData currentItem;
 
         private PlacedItem draggingItem;
+        private ItemData draggingLootItem;
+        private bool isDraggingFromLoot;
+
         private Vector2Int originalPos;
         private ItemRotation originalRotation;
 
         private float pressTime;
         private bool isHolding;
 
-        // UNITY METHODS
+        private Vector2 pressStartPos;
+        private bool isPointerOverLoot;
+        private bool blockLootDrag;
+
+        private int originalLootIndex;
+
         private void Awake()
         {
             items = new List<ItemData>();
@@ -36,7 +46,16 @@ namespace PacknCraft.Inventory.UI
             foreach (var config in itemConfigs)
                 items.Add(new ItemData(config));
 
-            PickRandomItem();
+            lootUI.Init(new List<ItemData>
+            {
+                new ItemData(itemConfigs[0]),
+                new ItemData(itemConfigs[2]),
+                new ItemData(itemConfigs[3]),
+                new ItemData(itemConfigs[4]),
+                new ItemData(itemConfigs[5]),
+                new ItemData(itemConfigs[6]),
+                new ItemData(itemConfigs[7])
+            });
         }
 
         private void Update()
@@ -49,18 +68,6 @@ namespace PacknCraft.Inventory.UI
             HandleHover(pointerPos);
 
             dragView.UpdatePosition(pointerPos);
-        }
-
-        // PRIVATE METHODS
-        private void PickRandomItem()
-        {
-            if (items.Count == 0)
-            {
-                currentItem = null;
-                return;
-            }
-
-            currentItem = items[Random.Range(0, items.Count)];
         }
 
         private Vector2 GetPointerPosition()
@@ -114,6 +121,33 @@ namespace PacknCraft.Inventory.UI
         {
             if (!IsPressedDown()) return;
 
+            pressStartPos = screenPos;
+            blockLootDrag = false;
+            isPointerOverLoot = false;
+
+            var results = Raycast(screenPos);
+
+            draggingItem = null;
+            draggingLootItem = null;
+            isDraggingFromLoot = false;
+
+            foreach (var hit in results)
+            {
+                var loot = hit.gameObject.GetComponentInParent<LootItemView>();
+                if (loot != null)
+                {
+                    draggingLootItem = loot.Data;
+                    isDraggingFromLoot = true;
+                    isPointerOverLoot = true;
+
+                    originalLootIndex = loot.transform.GetSiblingIndex();
+
+                    pressTime = Time.time;
+                    isHolding = false;
+                    return;
+                }
+            }
+
             var cell = RaycastCell(screenPos);
 
             if (cell != null)
@@ -132,6 +166,39 @@ namespace PacknCraft.Inventory.UI
 
         private void HandleHold(Vector2 screenPos)
         {
+            if (isDraggingFromLoot && draggingLootItem != null)
+            {
+                if (!IsPressed()) return;
+                if (isHolding) return;
+
+                float moveDist = Vector2.Distance(screenPos, pressStartPos);
+
+                if (isPointerOverLoot)
+                {
+                    Vector2 dir = screenPos - pressStartPos;
+                    bool isDraggingHoriz = moveDist > dragThreshold && Mathf.Abs(dir.x) > Mathf.Abs(dir.y);
+                    bool isDraggingVert = moveDist > dragThreshold && Mathf.Abs(dir.y) > Mathf.Abs(dir.x);
+
+                    // Drag vertical or hold long enough - drag item out of loot
+                    if ((isDraggingVert || Time.time - pressTime >= holdThreshold) && !blockLootDrag)
+                    {
+                        isHolding = true;
+
+                        lootUI.Remove(draggingLootItem);
+                        lootUI.SetScrollEnabled(false);
+
+                        dragView.Show(draggingLootItem);
+                    }
+                    // Drag horizontal - scroll loot view
+                    else if (isDraggingHoriz)
+                    {
+                        blockLootDrag = true;
+                        return;
+                    }
+                }
+                return;
+            }
+
             if (draggingItem == null) return;
             if (!IsPressed()) return;
             if (isHolding) return;
@@ -149,13 +216,41 @@ namespace PacknCraft.Inventory.UI
             }
         }
 
-        private void HandleRelease(Vector2 screenPos)
+        private async void HandleRelease(Vector2 screenPos)
         {
             if (!IsReleased()) return;
 
             dragView.Hide();
+            backpackUI.ClearPreview();
+
+            lootUI.SetScrollEnabled(true);
 
             var cell = RaycastCell(screenPos);
+
+            if (isDraggingFromLoot && draggingLootItem != null)
+            {
+                if (isHolding && cell != null)
+                {
+                    Vector2Int pos = cell.GetPosition();
+
+                    bool success = backpackUI.TryAddItem(draggingLootItem, pos);
+
+                    if (!success)
+                    {
+                        var view = await lootUI.Add(draggingLootItem);
+                        view.transform.SetSiblingIndex(originalLootIndex);
+                    }
+                }
+                else if (isHolding)
+                {
+                    var view = await lootUI.Add(draggingLootItem);
+                    view.transform.SetSiblingIndex(originalLootIndex);
+                }
+
+                draggingLootItem = null;
+                isDraggingFromLoot = false;
+                return;
+            }
 
             if (draggingItem != null && isHolding)
             {
@@ -202,16 +297,6 @@ namespace PacknCraft.Inventory.UI
                 {
                     backpackUI.TryRotateItem(item);
                 }
-                else if (item == null)
-                {
-                    if (currentItem != null)
-                    {
-                        bool success = backpackUI.TryAddItem(currentItem, pos);
-
-                        if (success)
-                            PickRandomItem();
-                    }
-                }
             }
 
             draggingItem = null;
@@ -219,6 +304,9 @@ namespace PacknCraft.Inventory.UI
 
         private void HandleHover(Vector2 screenPos)
         {
+            if (!isHolding)
+                return;
+
             var cell = RaycastCell(screenPos);
 
             if (cell == null)
@@ -229,13 +317,13 @@ namespace PacknCraft.Inventory.UI
 
             Vector2Int pos = cell.GetPosition();
 
-            if (draggingItem != null)
+            if (isDraggingFromLoot && draggingLootItem != null)
+            {
+                backpackUI.ShowPreview(draggingLootItem, pos);
+            }
+            else if (draggingItem != null)
             {
                 backpackUI.ShowPreview(draggingItem.Data, pos);
-            }
-            else if (currentItem != null)
-            {
-                backpackUI.ShowPreview(currentItem, pos);
             }
         }
 
