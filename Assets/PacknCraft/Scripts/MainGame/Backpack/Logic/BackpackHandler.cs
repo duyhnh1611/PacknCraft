@@ -19,6 +19,7 @@ namespace PacknCraft.Inventory
         // PROPERTIES
         public int Width { get; }
         public int Height { get; }
+        public IReadOnlyList<PlacedItem> Items => items.AsReadOnly();
 
         // PUBLIC METHODS
         public BackpackHandler(int width, int height)

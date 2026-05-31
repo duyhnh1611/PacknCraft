@@ -1,13 +1,13 @@
 using Cysharp.Threading.Tasks;
 using System.Collections.Generic;
 using UnityEngine;
+using PacknCraft.Helpers;
 
 namespace PacknCraft.Inventory.Crafting
 {
     public class RecipeManager
     {
         private Dictionary<(string, string), CraftRecipe> recipeDict = new();
-        private Dictionary<string, ItemConfig> itemCache = new();
 
         private (string, string) MakeKey(string a, string b)
         {
@@ -24,9 +24,9 @@ namespace PacknCraft.Inventory.Crafting
                 if (entry.ingredients == null || entry.ingredients.Count != 2)
                     continue;
 
-                var result = await LoadItem(entry.result);
-                var a = await LoadItem(entry.ingredients[0]);
-                var b = await LoadItem(entry.ingredients[1]);
+                var result = await ItemHelper.LoadConfig(entry.result);
+                var a = await ItemHelper.LoadConfig(entry.ingredients[0]);
+                var b = await ItemHelper.LoadConfig(entry.ingredients[1]);
 
                 var recipe = new CraftRecipe
                 {
@@ -37,16 +37,6 @@ namespace PacknCraft.Inventory.Crafting
                 var key = MakeKey(a.Id, b.Id);
                 recipeDict[key] = recipe;
             }
-        }
-
-        private async UniTask<ItemConfig> LoadItem(string id)
-        {
-            if (itemCache.TryGetValue(id, out var cached))
-                return cached;
-
-            var item = await AssetLoader.LoadAsync<ItemConfig>($"ItemConfig/{id}", "item");
-            itemCache[id] = item;
-            return item;
         }
 
         public CraftRecipe Find(ItemConfig a, ItemConfig b)

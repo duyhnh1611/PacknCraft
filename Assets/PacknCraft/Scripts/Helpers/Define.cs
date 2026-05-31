@@ -1,5 +1,10 @@
 namespace PacknCraft
 {
+    public enum SceneId
+    {
+        Game
+    }
+
     public enum ItemRotation
     {
         Up = 0,

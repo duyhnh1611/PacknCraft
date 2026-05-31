@@ -56,4 +56,30 @@ public static class AssetLoader
         handles.Remove(group);
         cache.Remove(group);
     }
+
+    public static void ReleaseAsset(string address, string group)
+    {
+        if (!cache.TryGetValue(group, out var groupCache))
+            return;
+
+        if (!handles.TryGetValue(group, out var groupHandles))
+            return;
+
+        if (!groupCache.TryGetValue(address, out var obj))
+            return;
+
+        for (int i = groupHandles.Count - 1; i >= 0; i--)
+        {
+            var handle = groupHandles[i];
+
+            if ((Object)handle.Result == obj)
+            {
+                Addressables.Release(handle);
+                groupHandles.RemoveAt(i);
+                break;
+            }
+        }
+
+        groupCache.Remove(address);
+    }
 }

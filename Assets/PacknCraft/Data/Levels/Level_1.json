@@ -1,0 +1,17 @@
+{
+  "level": 1,
+  "title": "Forge an Axe",
+  "description": "Craft an Axe",
+  "loot": [
+    "Wood",
+    "Wood",
+    "Stone",
+    "Rope"
+  ],
+  "targets": [
+    {
+      "type": "craft",
+      "detail": "{\"itemsToCraft\":[\"Axe\"]}"
+    }
+  ]
+}

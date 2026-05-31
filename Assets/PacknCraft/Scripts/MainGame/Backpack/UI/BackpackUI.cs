@@ -1,5 +1,7 @@
 using Cysharp.Threading.Tasks;
+using PacknCraft.Helpers;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace PacknCraft.Inventory.UI
 {
@@ -16,6 +18,9 @@ namespace PacknCraft.Inventory.UI
 
         private BackpackHandler handler;
         private Crafting.RecipeManager recipeManager;
+
+        public UnityEvent OnBackpackUpdated { get; } = new();
+        public BackpackHandler Handler => handler;
 
         private void Awake()
         {
@@ -40,12 +45,14 @@ namespace PacknCraft.Inventory.UI
                 return false;
 
             handler.Place(data, pos);
+            OnBackpackUpdated?.Invoke();
             return true;
         }
 
         public void RemoveItem(PlacedItem item)
         {
             handler.Remove(item);
+            OnBackpackUpdated?.Invoke();
         }
 
         public void ShowPreview(ItemData data, Vector2Int pos)
@@ -87,6 +94,9 @@ namespace PacknCraft.Inventory.UI
             handler.Remove(b);
 
             var newItem = new ItemData(recipe.Result);
+
+            OnBackpackUpdated?.Invoke();
+
             return newItem;
         }
     }

@@ -1,4 +1,5 @@
 using Cysharp.Threading.Tasks;
+using PacknCraft.Helpers;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -12,6 +13,8 @@ namespace PacknCraft.Inventory.UI
 
         private LootHandler handler;
         private Dictionary<ItemData, LootItemView> itemViewDict = new();
+
+        public LootHandler Handler => handler;
 
         public void Init(List<ItemData> items)
         {

@@ -14,15 +14,12 @@ namespace PacknCraft.Inventory.UI
 
         [Header("Items")]
         [SerializeField] private BackpackDragView dragView;
-        [SerializeField] private List<ItemConfig> itemConfigs;
 
         [Header("Drag Settings")]
         [SerializeField] private float holdThreshold = 0.15f;
         [SerializeField] private float dragThreshold = 10f;
 
         // PRIVATE FIELDS
-        private List<ItemData> items;
-
         private PlacedItem draggingItem;
         private ItemData draggingLootItem;
         private bool isDraggingFromLoot;
@@ -38,26 +35,6 @@ namespace PacknCraft.Inventory.UI
         private bool blockLootDrag;
 
         private int originalLootIndex;
-
-        private void Awake()
-        {
-            items = new List<ItemData>();
-
-            foreach (var config in itemConfigs)
-                items.Add(new ItemData(config));
-
-            lootUI.Init(new List<ItemData>
-            {
-                new ItemData(itemConfigs[0]),
-                new ItemData(itemConfigs[1]),
-                new ItemData(itemConfigs[2]),
-                new ItemData(itemConfigs[3]),
-                new ItemData(itemConfigs[4]),
-                new ItemData(itemConfigs[5]),
-                new ItemData(itemConfigs[6]),
-                new ItemData(itemConfigs[7])
-            });
-        }
 
         private void Update()
         {

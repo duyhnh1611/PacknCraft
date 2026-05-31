@@ -1,0 +1,20 @@
+{
+  "level": 2,
+  "title": "Arm the Adventurer",
+  "description": "Craft a Sword AND a Shield",
+  "loot": [
+    "Wood",
+    "Wood",
+    "Stone",
+    "Iron",
+    "Iron",
+    "Leather",
+    "Rope"
+  ],
+  "targets": [
+    {
+      "type": "craft",
+      "detail": "{\"itemsToCraft\":[\"Sword\",\"Shield\"]}"
+    }
+  ]
+}
