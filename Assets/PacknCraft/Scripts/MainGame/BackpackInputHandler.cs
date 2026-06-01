@@ -42,8 +42,8 @@ namespace PacknCraft.Inventory.UI
 
             HandlePress(pointerPos);
             HandleHold(pointerPos);
-            HandleRelease(pointerPos);
             HandleHover(pointerPos);
+            HandleRelease(pointerPos);
 
             dragView.UpdatePosition(pointerPos);
         }
