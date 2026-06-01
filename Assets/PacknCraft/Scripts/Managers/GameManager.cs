@@ -1,6 +1,7 @@
 using Cysharp.Threading.Tasks;
 using PacknCraft;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 
 public class GameManager : MonoBehaviour
 {
@@ -39,8 +40,15 @@ public class GameManager : MonoBehaviour
         missionManager.OnAllMissionsCompleted -= HandleMissionCompleted;
     }
 
-    private async void Start()
+    private void Start()
     {
+        Bootstrap();
+    }
+
+    private async void Bootstrap()
+    {
+        await Addressables.InitializeAsync();
+        await levelManager.PreloadLevelAsync(levelManager.CurrentLevel);
         await LoadCurrentLevelFlow();
     }
 
