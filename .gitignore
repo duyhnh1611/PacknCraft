@@ -40,6 +40,11 @@
 # Visual Studio cache directory
 .vs/
 
+# VS Code: share extension recommendations and debug config, ignore personal settings
+.vscode/*
+!.vscode/extensions.json
+!.vscode/launch.json
+
 # Gradle cache directory
 .gradle/
 
