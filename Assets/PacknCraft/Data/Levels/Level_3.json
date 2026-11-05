@@ -1,0 +1,32 @@
+{
+  "level": 3,
+  "title": "Greedy Adventurer",
+  "description": "Pack ALL items into the backpack. Leave nothing behind!",
+  "loot": [
+    "Shield",
+    "Shield",
+    "Shield",
+    "Shield",
+    "Sword",
+    "Sword",
+    "Sword",
+    "Axe",
+    "Axe",
+    "Iron",
+    "Iron",
+    "Leather",
+    "Leather",
+    "Leather",
+    "Rope",
+    "Rope",
+    "Stone",
+    "Wood",
+    "Wood"
+  ],
+  "targets": [
+    {
+      "type": "pack_all",
+      "detail": ""
+    }
+  ]
+}

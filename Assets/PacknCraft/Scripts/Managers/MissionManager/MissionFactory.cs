@@ -9,6 +9,9 @@ public static class MissionFactory
             case "craft":
                 return new MissionCraft(info.detail);
 
+            case "pack_all":
+                return new MissionPackAll();
+
             default:
                 UnityEngine.Debug.LogWarning($"Unknown mission type: {info.type}");
                 return null;
