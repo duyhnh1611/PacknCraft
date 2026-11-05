@@ -1,7 +1,7 @@
 {
   "level": 1,
   "title": "Forge an Axe",
-  "description": "Craft an Axe",
+  "description": "Drag Wood onto Stone to craft Axe",
   "loot": [
     "Wood",
     "Wood",

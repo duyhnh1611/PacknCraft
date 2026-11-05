@@ -15,6 +15,8 @@ namespace PacknCraft.Inventory.UI
         [SerializeField] private int width = 6;
         [SerializeField] private int height = 8;
         [SerializeField] private float cellSize = 150f;
+        [Tooltip("If enabled, items must be adjacent to be crafted together.")]
+        [SerializeField] private bool requireAdjacency = false;
 
         private BackpackHandler handler;
         private Crafting.RecipeManager recipeManager;
@@ -83,7 +85,7 @@ namespace PacknCraft.Inventory.UI
             if (a == null || b == null || a == b)
                 return null;
 
-            if (!ShapeAdjacency.AreAdjacent(a, b))
+            if (requireAdjacency && !ShapeAdjacency.AreAdjacent(a, b))
                 return null;
 
             var recipe = recipeManager.Find(a.Data.Config, b.Data.Config);
@@ -92,6 +94,28 @@ namespace PacknCraft.Inventory.UI
 
             handler.Remove(a);
             handler.Remove(b);
+
+            var newItem = new ItemData(recipe.Result);
+
+            OnBackpackUpdated?.Invoke();
+
+            return newItem;
+        }
+
+        /// <summary>
+        /// Crafts an item dragged from outside the grid (e.g. loot) with an item placed in the grid.
+        /// Dropping directly onto the target counts as contact, so adjacency is not checked.
+        /// </summary>
+        public ItemData TryCraftItem(ItemData dragged, PlacedItem target)
+        {
+            if (recipeManager == null || dragged == null || target == null)
+                return null;
+
+            var recipe = recipeManager.Find(dragged.Config, target.Data.Config);
+            if (recipe == null)
+                return null;
+
+            handler.Remove(target);
 
             var newItem = new ItemData(recipe.Result);
 

@@ -211,6 +211,23 @@ namespace PacknCraft.Inventory.UI
                 {
                     Vector2Int pos = cell.GetPosition();
 
+                    var targetItem = backpackUI.GetItemAt(pos);
+                    if (targetItem != null)
+                    {
+                        var crafted = backpackUI.TryCraftItem(draggingLootItem, targetItem);
+                        if (crafted != null)
+                        {
+                            Vector2Int preferredPos = targetItem.Position;
+
+                            if (!backpackUI.TryAddItem(crafted, preferredPos))
+                                await lootUI.Add(crafted);
+
+                            draggingLootItem = null;
+                            isDraggingFromLoot = false;
+                            return;
+                        }
+                    }
+
                     bool success = backpackUI.TryAddItem(draggingLootItem, pos);
 
                     if (!success)
